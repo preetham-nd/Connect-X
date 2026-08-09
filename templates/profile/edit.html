@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Edit profile — ConnectX{% endblock %}
+
+{% block content %}
+<h1>Edit profile</h1>
+<p class="muted">Email and password cannot be changed here; they are used for login.</p>
+
+<form class="auth-form profile-edit-form" method="post" action="{{ url_for('profile.edit', user_id=user.id) }}" enctype="multipart/form-data" novalidate>
+  <div class="form-group">
+    <label for="display_name">Display name</label>
+    <input type="text" id="display_name" name="display_name" value="{{ profile.display_name or '' }}" maxlength="120" placeholder="Optional">
+  </div>
+  <div class="form-group">
+    <label for="bio">Bio</label>
+    <textarea id="bio" name="bio" rows="4" maxlength="500" placeholder="Optional">{{ profile.bio or '' }}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="profile_image">Profile picture</label>
+    {% if profile.profile_image %}
+      <p class="form-hint"><img class="profile-image profile-image-sm" src="{{ url_for('static', filename=profile.profile_image) }}" alt="Current"> Current image. Upload a new file to replace.</p>
+    {% endif %}
+    <input type="file" id="profile_image" name="profile_image" accept=".png,.jpg,.jpeg,.gif,.webp">
+  </div>
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="{{ url_for('profile.view', user_id=user.id) }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

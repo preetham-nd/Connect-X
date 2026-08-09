@@ -1,0 +1,44 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Admin — Reports — ConnectX{% endblock %}
+
+{% block admin_body %}
+<header class="admin-page-header">
+  <h1 class="admin-page-title">Reported content</h1>
+  <p class="admin-page-subtitle">User-submitted or seeded reports (basic queue).</p>
+</header>
+
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Type</th>
+        <th scope="col">Content ID</th>
+        <th scope="col">Reason</th>
+        <th scope="col">Reported</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.content_type }}</td>
+        <td>{{ r.content_id }}</td>
+        <td>{{ r.reason or '—' }}</td>
+        <td class="admin-cell-muted">
+          {%- if not r.created_at -%}—
+          {%- elif r.created_at is string -%}{{ r.created_at }}
+          {%- else -%}{{ r.created_at.strftime('%b %d, %Y %I:%M %p') }}
+          {%- endif -%}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" class="admin-table-empty">No reports.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

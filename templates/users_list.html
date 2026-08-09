@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}People — ConnectX{% endblock %}
+
+{% block content %}
+<h1>People</h1>
+<p class="muted">Click a user to view their profile.</p>
+<ul class="users-list">
+  {% for user in users %}
+    <li class="users-list-item">
+      <a href="{{ url_for('profile.view', user_id=user.id) }}" class="users-list-link">
+        <span class="users-list-name">@{{ user.username }}</span>
+        {% if user.profile and user.profile.display_name %}
+          <span class="users-list-display"> — {{ user.profile.display_name }}</span>
+        {% endif %}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

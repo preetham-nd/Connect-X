@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile.display_name or user.username }} — ConnectX{% endblock %}
+
+{% block content %}
+<div class="profile-view">
+  <div class="profile-header">
+    {% if profile.profile_image %}
+      <img class="profile-image profile-image-lg" src="{{ url_for('static', filename=profile.profile_image) }}" alt="Profile">
+    {% else %}
+      <div class="profile-image profile-image-lg profile-image-placeholder"></div>
+    {% endif %}
+    <div class="profile-meta">
+      <h1 class="profile-display-name">{{ profile.display_name or user.username }}</h1>
+      <p class="profile-username">@{{ user.username }}</p>
+      {% if is_owner %}
+        <a href="{{ url_for('profile.edit', user_id=user.id) }}" class="btn btn-primary">Edit profile</a>
+      {% endif %}
+    </div>
+  </div>
+  {% if profile.bio %}
+    <p class="profile-bio">{{ profile.bio }}</p>
+  {% endif %}
+  <p class="profile-detail muted">Member since {{ user.created_at.strftime('%B %Y') if user.created_at else '—' }}</p>
+  {% if not is_owner %}
+    <p><a href="{{ url_for('main.index') }}">Back to home</a></p>
+  {% endif %}
+</div>
+{% endblock %}

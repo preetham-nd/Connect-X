@@ -1,0 +1,55 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Admin — Users — ConnectX{% endblock %}
+
+{% block admin_body %}
+<header class="admin-page-header">
+  <h1 class="admin-page-title">All users</h1>
+  <p class="admin-page-subtitle">Registered accounts on the platform.</p>
+</header>
+
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+        <th scope="col">Blocked</th>
+        <th scope="col">Joined</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>@{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td><span class="admin-role-pill">{{ u.role }}</span></td>
+        <td>{% if u.is_blocked %}yes{% else %}no{% endif %}</td>
+        <td class="admin-cell-muted">{{ u.created_at.strftime('%b %d, %Y') if u.created_at else '—' }}</td>
+        <td>
+          {% if u.role == 'admin' %}
+            —
+          {% elif u.is_blocked %}
+            <form method="post" action="{{ url_for('admin.unblock_user', user_id=u.id) }}" class="admin-inline-form">
+              <button type="submit" class="btn btn-secondary btn-sm">Unblock</button>
+            </form>
+          {% else %}
+            <form method="post" action="{{ url_for('admin.block_user', user_id=u.id) }}" class="admin-inline-form" onsubmit="return confirm('Block this user?');">
+              <button type="submit" class="btn btn-danger btn-sm">Block</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7" class="admin-table-empty">No users yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

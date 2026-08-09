@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}New post — ConnectX{% endblock %}
+
+{% block content %}
+<h1>Create a post</h1>
+<form class="auth-form post-form" method="post" action="{{ url_for('posts.create') }}" novalidate>
+  <div class="form-group">
+    <label for="content">Content</label>
+    <textarea id="content" name="content" rows="4" maxlength="1000" required placeholder="What's on your mind?">{{ content|default('', true) }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Post</button>
+  <a href="{{ url_for('main.feed') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

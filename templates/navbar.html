@@ -1,0 +1,19 @@
+<header class="navbar" role="navigation">
+  <nav class="navbar-inner">
+    <a href="{{ url_for('main.index') }}" class="navbar-brand">ConnectX</a>
+    <div class="navbar-links">
+      {% if current_user %}
+        <a href="{{ url_for('main.feed') }}" class="navbar-link">Feed</a>
+        <a href="{{ url_for('main.users_list') }}" class="navbar-link">People</a>
+        <a href="{{ url_for('profile.view_own') }}" class="navbar-link">Profile</a>
+        <a href="{{ url_for('auth.logout') }}" class="navbar-link">Logout</a>
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('admin.dashboard') }}" class="navbar-link navbar-link-admin">Admin</a>
+        {% endif %}
+      {% else %}
+        <a href="{{ url_for('auth.register') }}" class="navbar-link">Register</a>
+        <a href="{{ url_for('auth.login') }}" class="navbar-link">Login</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,45 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Admin — Comments — ConnectX{% endblock %}
+
+{% block admin_body %}
+<header class="admin-page-header">
+  <h1 class="admin-page-title">Comments</h1>
+  <p class="admin-page-subtitle">All comments across posts, newest first.</p>
+</header>
+
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Post ID</th>
+        <th scope="col">Author</th>
+        <th scope="col">Content</th>
+        <th scope="col">Created</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in comments %}
+      <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.post_id }}</td>
+        <td>@{{ c.author_username }}</td>
+        <td class="admin-post-preview">{{ c.content_preview }}</td>
+        <td class="admin-cell-muted">{{ c.created_at.strftime('%b %d, %Y %I:%M %p') if c.created_at else '—' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin.delete_comment', comment_id=c.id) }}" class="admin-inline-form" onsubmit="return confirm('Delete this comment permanently?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" class="admin-table-empty">No comments yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

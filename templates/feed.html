@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Feed — ConnectX{% endblock %}
+
+{% block content %}
+<h1>Feed</h1>
+<p class="muted">Posts from everyone. Newest first.</p>
+<p><a href="{{ url_for('posts.create') }}" class="btn btn-primary">New post</a></p>
+{% if posts %}
+  <ul class="posts-list">
+    {% for post in posts %}
+      <li class="post-card">
+        <div class="post-content">{{ post.content }}</div>
+        <div class="post-meta">
+          <a href="{{ url_for('profile.view', user_id=post.user.id) }}" class="post-author">@{{ post.user.username }}</a>
+          <span class="post-time">{{ post.created_at.strftime('%b %d, %Y at %I:%M %p') if post.created_at else '—' }}</span>
+        </div>
+        <div class="post-likes">
+          <span class="like-count">Likes: {{ like_counts.get(post.id, 0) }}</span>
+          {% if post.id in liked_post_ids %}
+            <form method="post" action="{{ url_for('likes.unlike_post', post_id=post.id) }}" class="like-form-inline">
+              <button type="submit" class="btn btn-secondary btn-sm">Unlike</button>
+            </form>
+          {% else %}
+            <form method="post" action="{{ url_for('likes.like_post', post_id=post.id) }}" class="like-form-inline">
+              <button type="submit" class="btn btn-primary btn-sm">Like</button>
+            </form>
+          {% endif %}
+          {% if current_user and current_user.id != post.user_id %}
+          <details class="post-report">
+            <summary class="post-report-summary">Report post</summary>
+            <form class="post-report-form" method="post" action="{{ url_for('main.report_post', post_id=post.id) }}">
+              <input type="text" name="reason" placeholder="Reason (optional)" maxlength="500" aria-label="Report reason">
+              <button type="submit" class="btn btn-secondary btn-sm">Submit report</button>
+            </form>
+          </details>
+          {% endif %}
+        </div>
+        <div class="post-comments">
+          <h4>Comments</h4>
+          <form method="post" action="{{ url_for('comments.add_comment', post_id=post.id) }}" class="comment-form">
+            <input type="text" name="content" placeholder="Write a comment..." maxlength="500" required>
+            <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+          </form>
+          {% set comments = comments_by_post.get(post.id, []) %}
+          {% if comments %}
+            <ul class="comments-list">
+              {% for comment in comments %}
+                <li class="comment-item">
+                  <span class="comment-author">@{{ comment.username }}</span>
+                  <span class="comment-content">{{ comment.content }}</span>
+                  <span class="comment-time">
+                    {%- if not comment.created_at -%}—
+                    {%- elif comment.created_at is string -%}{{ comment.created_at }}
+                    {%- else -%}{{ comment.created_at.strftime('%b %d, %Y at %I:%M %p') }}
+                    {%- endif -%}
+                  </span>
+                  {% if current_user and current_user.id == comment.user_id %}
+                    <form method="post" action="{{ url_for('comments.delete_comment', comment_id=comment.id) }}" class="comment-delete-form" onsubmit="return confirm('Delete this comment?');">
+                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="muted">No comments yet.</p>
+          {% endif %}
+        </div>
+        {% if current_user and current_user.id == post.user_id %}
+          <div class="post-actions">
+            <a href="{{ url_for('posts.edit', post_id=post.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form method="post" action="{{ url_for('posts.delete', post_id=post.id) }}" class="post-delete-form" onsubmit="return confirm('Delete this post? It cannot be restored.');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </div>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="muted">No posts in the feed yet. <a href="{{ url_for('posts.create') }}">Create one</a>.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main_extra_class %}main-content--admin{% endblock %}
+
+{% block content %}
+<div class="admin-app-shell">
+  <aside class="admin-sidebar" aria-label="Admin navigation">
+    <div class="admin-sidebar-brand">
+      <a href="{{ url_for('admin.dashboard') }}" class="admin-sidebar-logo">ConnectX</a>
+      <span class="admin-sidebar-badge">Admin</span>
+    </div>
+   
+  </aside>
+  <div class="admin-main">
+    {% block admin_body %}{% endblock %}
+  </div>
+</div>
+{% endblock %}
